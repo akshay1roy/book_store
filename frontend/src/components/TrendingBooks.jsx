@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Star, StarHalf, StarOff } from "lucide-react";
 import { books } from "../assets/assets"; // Ensure this is the correct path
+import { useNavigate } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 // Function to render star ratings
 const renderStars = (rating) => {
@@ -23,9 +26,33 @@ const renderStars = (rating) => {
   );
 };
 
+
 export default function TrendingBooks() {
+  const navigate= useNavigate()
+  const {cart, addToCart}= useContext(CartContext);
+
   // Filter trending books
   const trendingBooks = books.filter((book) => book.trending).slice(0, 8); // Only top 8
+
+
+  const handleAddToCart=(item)=>{
+    addToCart(item);
+    toast.success("Item added to cart!", {
+      position: "top-right",
+      autoClose: 3000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+
+  }
+
+
+  useEffect(()=>{
+    console.log('trending books',cart);
+  },[cart])
 
   return (
     <div className="py-16  px-6 md:px-16 bg-white">
@@ -37,13 +64,14 @@ export default function TrendingBooks() {
         {trendingBooks.map((book) => (
           <div
             key={book._id}
-            className="group bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-3"
+            className="group bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
           >
             <div className="overflow-hidden rounded-lg">
               <img
                 src={book.image}
                 alt={book.title}
-                className="w-40 h-56 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                onClick={()=>navigate(`/book/${book._id}`)}
+                className="w-40 h-56 object-cover cursor-pointer rounded-lg transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-gray-800">{book.title}</h3>
@@ -61,8 +89,8 @@ export default function TrendingBooks() {
             {/* About Book */}
             {/* <p className="text-gray-600 text-sm mt-3 px-2">{book.about}</p> */}
 
-            <button className="mt-3 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
-              View Details
+            <button onClick={()=>handleAddToCart(book)} className="mt-3 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+              Add to cart
             </button>
           </div>
         ))}

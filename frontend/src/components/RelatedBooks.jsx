@@ -53,7 +53,7 @@ export default function RelatedBooks({ category, bookId }) {
                 </span>
               </div>
 
-              <button onClick={()=>{navigate(`/book/${book.bookId}`); scrollTo(0.0)}} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+              <button onClick={()=>{navigate(`/book/${book.bookId}`)}} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
                 View Details
               </button>
             </div>

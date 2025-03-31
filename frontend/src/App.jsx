@@ -11,16 +11,21 @@ import OrderPage from "./pages/OrderPage";
 import SingleBook from "./pages/SingleBook";
 import Footer from "./components/Footer";
 import CardPage from "./pages/CardPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+import Signup from "./pages/Signup";
 
 function App() {
   return (
     <div>
+       <ToastContainer />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Books />} />
         <Route path="books/:category" element={<Books />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/signup' element={<Signup/>} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<CardPage/>}/>

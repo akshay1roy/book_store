@@ -1,11 +1,13 @@
-import React from "react";
 import { useParams } from "react-router-dom";
 import { books } from "../assets/assets"; // Ensure correct path
 import { Star, StarHalf, StarOff } from "lucide-react";
 import RelatedBooks from "../components/RelatedBooks";
+import { CartContext } from "../context/CartContext";
 
 export default function SingleBook() {
   const { bookId } = useParams();
+    // const {cart, addToCart,removeFromCart}= useContext(CartContext);
+
   const book = books.find((b) => b._id == bookId);
 
   // console.log(data)
@@ -77,7 +79,7 @@ export default function SingleBook() {
           {/* Buttons */}
           <div className="mt-6 flex gap-4">
             <button className="px-6 py-3 bg-blue-500 text-white rounded-lg  shadow-md hover:bg-blue-600 transition-all">
-              Buy Now
+              Add to cart
             </button>
             <button className="px-6 py-3 bg-yellow-400 text-gray-600 rounded-lg font-medium shadow-md hover:bg-yellow-500 transition-all">
               Add to Cart

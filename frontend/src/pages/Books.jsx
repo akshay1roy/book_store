@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import { categorires } from "../assets/assets";
-import { books } from "../assets/assets";  // Ensure this is the correct path
-import { Star, StarHalf, StarOff } from "lucide-react"; 
+import { books } from "../assets/assets"; // Ensure this is the correct path
+import { Star, StarHalf, StarOff } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import RelatedBooks from "../components/RelatedBooks";
+import { CartContext } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 export default function Books() {
   const { category } = useParams();
   // console.log("categories", category);
+  const { cart, addToCart } = useContext(CartContext);
 
   const navigate = useNavigate();
 
@@ -22,24 +25,43 @@ export default function Books() {
     // console.log(filterBook)
   };
 
-
+  const handleAddToCart = (item) => {
+    addToCart(item);
+    toast.success("Item added to cart!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+  };
 
   // Function to render star ratings using Lucide-react
-const renderStars = (rating) => {
-  const fullStars = Math.floor(rating);
-  const halfStar = rating % 1 !== 0;
-  return (
-    <div className="flex justify-center mt-2 text-yellow-500">
-      {Array(fullStars).fill().map((_, i) => <Star key={i} fill="currentColor" stroke="none" />)}
-      {halfStar && <StarHalf fill="currentColor" stroke="none" />}
-      {Array(5 - fullStars - (halfStar ? 1 : 0)).fill().map((_, i) => <StarOff key={i + fullStars} />)}
-    </div>
-  );
-};
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
+    return (
+      <div className="flex justify-center mt-2 text-yellow-500">
+        {Array(fullStars)
+          .fill()
+          .map((_, i) => (
+            <Star key={i} fill="currentColor" stroke="none" />
+          ))}
+        {halfStar && <StarHalf fill="currentColor" stroke="none" />}
+        {Array(5 - fullStars - (halfStar ? 1 : 0))
+          .fill()
+          .map((_, i) => (
+            <StarOff key={i + fullStars} />
+          ))}
+      </div>
+    );
+  };
 
-
-
-
+  useEffect(() => {
+    console.log("Cart Updated:", cart);
+  }, [cart]);
 
   useEffect(() => {
     applyFilter();
@@ -122,14 +144,15 @@ const renderStars = (rating) => {
           {filterBook.map((item) => (
             <div
               key={item._id}
-              
               className="group bg-white p-4 rounded-lg shadow-lg hover:shadow-xl  transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
             >
-              <div  onClick={()=>navigate(`/book/${item._id}`)} className="overflow-hidden cursor-pointer rounded-lg">
+              <div
+                onClick={() => navigate(`/book/${item._id}`)}
+                className="overflow-hidden cursor-pointer rounded-lg"
+              >
                 <img
                   src={item.image}
                   alt={item.title}
-                  
                   className="w-40 h-56 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
@@ -143,7 +166,7 @@ const renderStars = (rating) => {
               {renderStars(item.rating)}
 
               {/* Price Section */}
-              <div className="mt-3 flex items-center gap-2"  >
+              <div className="mt-3 flex items-center gap-2">
                 <span className="text-lg font-bold text-green-600">
                   ${item.new_price}
                 </span>
@@ -155,8 +178,11 @@ const renderStars = (rating) => {
               {/* About Book */}
               {/* <p className="text-gray-600 text-sm mt-3 px-2">{book.about}</p> */}
 
-              <button onClick={()=>console.log("clicked")} className="mt-3 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
-                Buy now
+              <button
+                onClick={() => handleAddToCart(item)}
+                className="mt-3 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+              >
+                Add to cart
               </button>
             </div>
           ))}

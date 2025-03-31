@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Star, StarHalf, StarOff } from "lucide-react"; // Importing icons from lucide-react
+import { useNavigate } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 const books = [
   {
-    id: 1,
+    _id: 1,
     title: "The Alchemist",
     author: "Paulo Coelho",
     image: "https://m.media-amazon.com/images/I/51Z0nLAfLmL.jpg",
@@ -12,7 +15,7 @@ const books = [
     newPrice: "$14.99",
   },
   {
-    id: 2,
+    _id: 2,
     title: "Atomic Habits",
     author: "James Clear",
     image: "https://m.media-amazon.com/images/I/91bYsX41DVL.jpg",
@@ -21,7 +24,7 @@ const books = [
     newPrice: "$18.99",
   },
   {
-    id: 3,
+    _id: 3,
     title: "Rich Dad Poor Dad",
     author: "Robert Kiyosaki",
     image: "https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg",
@@ -30,7 +33,7 @@ const books = [
     newPrice: "$12.50",
   },
   {
-    id: 4,
+    _id: 4,
     title: "The Subtle Art of Not Giving a F*ck",
     author: "Mark Manson",
     image: "https://m.media-amazon.com/images/I/71QKQ9mwV7L.jpg",
@@ -54,6 +57,34 @@ const renderStars = (rating) => {
 };
 
 export default function Recommended() {
+  const navigate=useNavigate();
+
+  const {addToCart}=useContext(CartContext)
+
+
+
+  
+    const handleAddToCart=(item)=>{
+      addToCart(item);
+      toast.success("Item added to cart!", {
+        position: "top-right",
+        autoClose: 3000, 
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+  
+    }
+
+
+
+
+
+
+ 
+
   return (
     <div className="py-16 mt-5 px-6 md:px-16 ">
       <h2 className="text-3xl md:text-4xl font-semibold text-gray-700 text-center mb-6">
@@ -68,13 +99,14 @@ export default function Recommended() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {books.slice(0.8).map((book) => (
           <div
-            key={book.id}
-            className="bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-2  "
+            key={book._id}
+            className="bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1  "
           >
             <img
               src={book.image}
               alt={book.title}
-              className="w-40 h-56 object-cover rounded-lg "
+              onClick={()=>navigate(`/book/${book._id}`)}
+              className="w-40 h-56 cursor-pointer object-cover rounded-lg "
             />
             <h3 className="mt-4 text-xl font-semibold text-gray-800">{book.title}</h3>
             <p className="text-gray-600">{book.author}</p>
@@ -88,8 +120,8 @@ export default function Recommended() {
               <span className="text-gray-500 line-through">{book.oldPrice}</span>
             </div>
 
-            <button className="mt-4 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-              View Details
+            <button onClick={()=>handleAddToCart(book)} className="mt-4 px-6 py-2 cursor-pointer bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+              Add to cart
             </button>
           </div>
         ))}
