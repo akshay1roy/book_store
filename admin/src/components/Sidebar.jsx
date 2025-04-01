@@ -44,6 +44,11 @@ export default function Sidebar() {
               Users
             </Link>
           </li>
+          <li>
+            <Link onClick={()=>setIsOpen(false)} to="/new-book" className="block p-2 hover:bg-gray-700 rounded">
+              Add new  Book
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

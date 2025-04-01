@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-import { books } from "../assets/assets";
+// import { books } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { AdminContext } from "../context/AdminContext";
 // import {category } from '../assets/assets'
 
 export default function Books() {
+  const { books, aToken, getAllBooks } = useContext(AdminContext);
+  // console.log(books)
 
-    const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const categories = [...new Set(books.map((book) => book.category))];
 
@@ -27,6 +30,13 @@ export default function Books() {
       setFilterBooks(books);
     }
   }, [selectedCategory, books]);
+
+  useEffect(() => {
+    if(aToken)
+    {
+      getAllBooks();
+    }
+  }, [aToken]);
 
   return (
     <div className="flex p-2 bg-gray-100 min-h-screen">
@@ -70,12 +80,12 @@ export default function Books() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredBooks.map((book) => (
-            <div key={book.id} className="bg-white  p-6 rounded-lg shadow-lg">
+            <div key={book._id} className="bg-white  p-6 rounded-lg shadow-lg">
               {/* Book Image */}
               <img
                 src={book.image}
                 alt={book.title}
-                onClick={()=>navigate(`/books/${book._id}`)}
+                onClick={() => navigate(`/books/${book._id}`)}
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
 

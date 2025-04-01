@@ -23,7 +23,7 @@ const getBookById=async(req,res)=>{
             return res.json({success:false, message:"Book not found"})
         }
 
-        res.json({success:true, message:book})
+        res.json({success:true,book})
 
     } catch (error) {
         console.log(error)
