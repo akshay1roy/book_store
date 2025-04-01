@@ -31,7 +31,7 @@ const AdminContextProvider = ({ children }) => {
     try {
         const {data}= await axios.get(`${backendUrl}/api/book/get-book/${id}`,{},{headers:{aToken}})
         
-        console.log(data);
+        // console.log(data);
         setSingleBook(data.book)
 
 

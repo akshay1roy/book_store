@@ -97,7 +97,7 @@ const updateBook = async (req, res) => {
             imageURL = imageUpload.secure_url;
         }
 
-        console.log("Book Id", bookId);
+        // console.log("Book Id", bookId);
 
         // console.log(imageURL);
 
@@ -134,6 +134,8 @@ const updateBook = async (req, res) => {
 const deleteBook=async(req,res)=>{
     try {
         const bookId = req.params.id;
+
+        console.log(bookId);
         const book = await BookModel.findById(bookId);
 
         if (!book) {

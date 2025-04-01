@@ -1,17 +1,45 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { Book, Tag, DollarSign, Star, TrendingUp } from 'lucide-react'; // Import icons from lucide-react
 
 export default function SingleBook() {
-  const { getSingleBook, aToken, singleBook } = useContext(AdminContext);
+  const { getSingleBook, aToken, singleBook, backendUrl } =
+    useContext(AdminContext);
   const { id } = useParams();
   const [showFullAbout, setShowFullAbout] = useState(false);
+  const navigate = useNavigate();
+
+  const handelDeleteBook = async () => {
+    // console.log(id)
+
+    try {
+      alert("Do you want to delete the book?");
+      const { data } = await axios.delete(
+        `${backendUrl}/api/admin/delete-book/${id}`,
+        { headers: { atoken: aToken } }
+      );
+      // console.log(data);
+      if (data.success) {
+        console.log(data);
+        toast.success("Book Deleted Successfully");
+        navigate('/books');
+      } else {
+        toast.error("Book didn't delete.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     if (aToken) {
       getSingleBook(id);
     }
-  }, [id, aToken]);
+  }, [id]);
 
   if (!singleBook) {
     return (
@@ -24,7 +52,6 @@ export default function SingleBook() {
   return (
     <div className="min-h-[90vh] flex justify-center items-center bg-gray-50 p-6">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg flex flex-col md:flex-row overflow-hidden">
-        
         {/* Left Side - Fixed Image Section */}
         <div className="md:w-1/2 w-full flex items-center justify-center p-6 bg-gradient-to-r from-blue-400 to-indigo-500 min-h-[28rem]">
           <img
@@ -41,8 +68,9 @@ export default function SingleBook() {
               {singleBook.title}
             </h1>
 
-            <p className="text-lg text-gray-600 mb-2">
-              <strong>📖 Category:</strong>{" "}
+            <p className="text-lg text-gray-600 mb-2 flex items-center">
+              <Tag className="mr-2 text-indigo-500" /> {/* Category Icon with color */}
+              <strong> Category:</strong>{" "}
               <span className="text-indigo-500 font-semibold">
                 {singleBook.category}
               </span>
@@ -50,9 +78,12 @@ export default function SingleBook() {
 
             {/* Scrollable About Section */}
             <div className="relative mb-4 max-h-[8rem] overflow-hidden hover:overflow-y-auto pr-2">
-              <p className="text-gray-600">
-                <strong>📜 About:</strong>{" "}
-                {showFullAbout ? singleBook.about : singleBook.about.slice(0, 200) + "..."}
+              <p className="text-gray-600 flex items-center">
+                <Book className="mr-2 text-yellow-500" /> {/* About Icon with color */}
+                <strong> About:</strong>{" "}
+                {showFullAbout
+                  ? singleBook.about
+                  : singleBook.about.slice(0, 200) + "..."}
               </p>
               {singleBook.about.length > 200 && (
                 <button
@@ -64,18 +95,25 @@ export default function SingleBook() {
               )}
             </div>
 
-            <p className="text-lg text-gray-700 mb-4">
-              <strong>💰 Price:</strong>{" "}
-              <span className="text-green-500 font-bold ml-1">₹{singleBook.new_price}</span>
-              <span className="text-gray-500 line-through ml-2">₹{singleBook.old_price}</span>
+            <p className="text-lg text-gray-700 mb-4 flex items-center">
+              <DollarSign className="mr-2 text-green-500" /> {/* Price Icon with color */}
+              <strong> Price:</strong>{" "}
+              <span className="text-green-500 font-bold ml-1">
+                ₹{singleBook.new_price}
+              </span>
+              <span className="text-gray-500 line-through ml-2">
+                ₹{singleBook.old_price}
+              </span>
             </p>
 
-            <p className="text-lg text-gray-700 mb-4">
-              <strong>⭐ Rating:</strong> {singleBook.rating} / 5
+            <p className="text-lg text-gray-700 mb-4 flex items-center">
+              <Star className="mr-2 text-yellow-400" /> {/* Rating Icon with color */}
+              <strong> Rating:</strong> {singleBook.rating} / 5
             </p>
 
-            <p className="text-lg text-gray-700 mb-4">
-              <strong>🔥 Trending:</strong> {singleBook.trending ? "Yes" : "No"}
+            <p className="text-lg text-gray-700 mb-4 flex items-center">
+              <TrendingUp className="mr-2 text-red-500" /> {/* Trending Icon with color */}
+              <strong> Trending:</strong> {singleBook.trending ? "Yes" : "No"}
             </p>
           </div>
 
@@ -84,7 +122,10 @@ export default function SingleBook() {
             <button className="w-1/2 px-6 py-2 text-lg font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
               ✏️ Edit
             </button>
-            <button className="w-1/2 px-6 py-2 text-lg font-semibold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition duration-300">
+            <button
+              onClick={handelDeleteBook}
+              className="w-1/2 px-6 py-2 text-lg font-semibold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+            >
               🗑️ Delete
             </button>
           </div>
