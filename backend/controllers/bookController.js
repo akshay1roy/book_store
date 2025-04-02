@@ -7,6 +7,7 @@ import BookModel from "../models/BookModel.js";
 const getBooks=async(req,res)=>{
     try {
         const books= await BookModel.find();
+        console.log(books);
         res.json({success:true, books})
     } catch (error) {
         console.log(error)

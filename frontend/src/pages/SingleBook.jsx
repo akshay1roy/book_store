@@ -1,12 +1,17 @@
 import { useParams } from "react-router-dom";
-import { books } from "../assets/assets"; // Ensure correct path
+// import { books } from "../assets/assets"; // Ensure correct path
 import { Star, StarHalf, StarOff } from "lucide-react";
 import RelatedBooks from "../components/RelatedBooks";
 import { CartContext } from "../context/CartContext";
+import { useContext } from "react";
+import { UserAppContext } from "../context/UserAppContext";
+import { toast } from "react-toastify";
 
 export default function SingleBook() {
+  const { books } = useContext(UserAppContext);
+  const { addToCart } = useContext(CartContext);
   const { bookId } = useParams();
-    // const {cart, addToCart,removeFromCart}= useContext(CartContext);
+  // const {cart, addToCart,removeFromCart}= useContext(CartContext);
 
   const book = books.find((b) => b._id == bookId);
 
@@ -17,6 +22,19 @@ export default function SingleBook() {
       <p className="text-center text-red-500 text-lg mt-10">Book not found!</p>
     );
   }
+
+  const handleAddToCart = (item) => {
+    addToCart(item);
+    toast.success("Item added to cart!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+  };
 
   // Function to render star ratings
 
@@ -78,11 +96,14 @@ export default function SingleBook() {
 
           {/* Buttons */}
           <div className="mt-6 flex gap-4">
-            <button className="px-6 py-3 bg-blue-500 text-white rounded-lg  shadow-md hover:bg-blue-600 transition-all">
+            <button
+              onClick={() => handleAddToCart(book)}
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg  shadow-md hover:bg-blue-600 transition-all"
+            >
               Add to cart
             </button>
             <button className="px-6 py-3 bg-yellow-400 text-gray-600 rounded-lg font-medium shadow-md hover:bg-yellow-500 transition-all">
-              Add to Cart
+              Add to favorite
             </button>
           </div>
         </div>

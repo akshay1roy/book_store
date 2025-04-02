@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { Star, StarHalf, StarOff } from "lucide-react";
-import { books } from "../assets/assets"; // Ensure this is the correct path
+// import { books } from "../assets/assets"; // Ensure this is the correct path
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
+import { UserAppContext } from "../context/UserAppContext";
 
 // Function to render star ratings
 const renderStars = (rating) => {
@@ -28,11 +29,17 @@ const renderStars = (rating) => {
 
 
 export default function TrendingBooks() {
+  const {books}= useContext(UserAppContext)
+
+  
+
   const navigate= useNavigate()
   const {cart, addToCart}= useContext(CartContext);
 
   // Filter trending books
   const trendingBooks = books.filter((book) => book.trending).slice(0, 8); // Only top 8
+
+  // console.log(trendingBooks)
 
 
   const handleAddToCart=(item)=>{

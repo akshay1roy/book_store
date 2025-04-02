@@ -1,23 +1,61 @@
-import { createContext, useState } from "react";
+import axios from "axios";
+import { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const AppContext=createContext();
 
-const AppContextProvider=(props)=>{
+const AppContextProvider=({children})=>{
+
+    const [aToken, setAToken] = useState(localStorage.getItem("aToken") || null);
+
     const backendUrl=import.meta.env.VITE_BACKEND_URL
 
-    const [books,setBooks]=useState([])
+    const [users,setUsers]=useState([])
+
+
+    const getAllUser=async()=>{
+        try {
+            
+            const {data}= await axios.get(backendUrl+'/api/user/get-all-user',{headers:{aToken}})
+
+            // console.log(aToken);
+            // console.log(response)
+
+            if(data.success)
+            {
+                // toast.success('success');
+                setUsers(data.userData);
+            }
+            else{
+                toast.error("Doesn't fetch user");
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
 
     
 
     const value={
-        books,
-        setBooks,
-        backendUrl
+        users,
+        setUsers,
+        backendUrl,
+        getAllUser,
+        setAToken
     }
+
+     useEffect(() => {
+        if (aToken) {
+          localStorage.setItem("aToken", aToken);
+        } else {
+          localStorage.removeItem("aToken"); // Remove token on logout
+        }
+      }, [aToken]);
 
     return (
         <AppContext.Provider value={value}>
-            {props.value}
+            {children}
         </AppContext.Provider>
     )
 }

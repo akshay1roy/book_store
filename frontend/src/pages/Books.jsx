@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 // import { categorires } from "../assets/assets";
-import { books } from "../assets/assets"; // Ensure this is the correct path
+// import { books } from "../assets/assets"; // Ensure this is the correct path
 import { Star, StarHalf, StarOff } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import RelatedBooks from "../components/RelatedBooks";
+// import RelatedBooks from "../components/RelatedBooks";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
+import { UserAppContext } from "../context/UserAppContext";
 
 export default function Books() {
   const { category } = useParams();
+
+  const { books } = useContext(UserAppContext);
+
+  // console.log(books)
   // console.log("categories", category);
   const { cart, addToCart } = useContext(CartContext);
 
@@ -29,7 +34,7 @@ export default function Books() {
     addToCart(item);
     toast.success("Item added to cart!", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,

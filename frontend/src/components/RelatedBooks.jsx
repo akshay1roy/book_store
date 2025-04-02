@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { books } from "../assets/assets";
+import { useContext } from "react";
+// import { books } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { UserAppContext } from "../context/UserAppContext";
 
 export default function RelatedBooks({ category, bookId }) {
+  const {books}= useContext(UserAppContext)
   const navigate = useNavigate();
   const [relBooks, setRelBooks] = useState([]);
 

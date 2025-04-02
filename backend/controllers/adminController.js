@@ -49,7 +49,7 @@ const addBook = async (req, res) => {
             title, image: imageURL, category, old_price, new_price, about, rating, trending
         }
 
-        console.log(bookData)
+        // console.log(bookData)
 
         const newBook = new BookModel(bookData)
 
@@ -77,10 +77,10 @@ const updateBook = async (req, res) => {
         const bookId = req.params.id;
         const imageFile = req.file;
 
-        console.log("req.body:", req.body);
-        console.log("req.file:", req.file);
+        // console.log("req.body:", req.body);
+        // console.log("req.file:", req.file);
 
-        console.log(title, category, old_price, new_price, about, rating, trending)
+        // console.log(title, category, old_price, new_price, about, rating, trending)
 
 
         const book = await BookModel.findById(bookId);
@@ -135,7 +135,7 @@ const deleteBook=async(req,res)=>{
     try {
         const bookId = req.params.id;
 
-        console.log(bookId);
+        // console.log(bookId);
         const book = await BookModel.findById(bookId);
 
         if (!book) {

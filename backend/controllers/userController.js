@@ -133,6 +133,19 @@ const updateProfile = async (req, res) => {
     }
 }
 
+const getAllUuser=async(req,res)=>{
+    try {
+
+        const userData= await UserModel.find();
+
+        res.json({ success: true, userData });
+
+        
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+}
 
 
-export { registerUser, loginUser, getProfile, updateProfile }
+export { registerUser, loginUser, getProfile, updateProfile,getAllUuser }
