@@ -2,11 +2,13 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ShoppingCart, User } from "lucide-react";
 import { CartContext } from "../context/CartContext";
+import { UserAppContext } from "../context/UserAppContext";
 
 const Navbar = () => {
+  const {token, setToken}= useContext(UserAppContext)
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [token, setToken] = useState(true);
+  // const [token, setToken] = useState(true);
   const dropdownRef = useRef(null);
 
   const { cart } = useContext(CartContext);
@@ -23,6 +25,12 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+
+  const handleLogout=()=>{
+    localStorage.removeItem('token');
+    setToken(null);
+  }
 
   return (
     <nav className="bg-blue-500 text-white shadow-md px-4 py-4">
@@ -125,7 +133,7 @@ const Navbar = () => {
                   <li>
                     <button
                       className="w-full text-left px-4 py-2 mt-1 text-red-600 hover:bg-gray-100"
-                      onClick={() => setToken(false)}
+                      onClick={handleLogout}
                     >
                       Logout
                     </button>

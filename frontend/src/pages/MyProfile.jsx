@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import upload_area from "../assets/upload_area.png"; // Import correctly
+import { UserAppContext } from "../context/UserAppContext";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function MyProfile() {
+  const { backendUrl, token } = useContext(UserAppContext);
+
   const [isEdit, setIsEdit] = useState(false);
   const [image, setImage] = useState(null);
   const [userData, setUserData] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "123-456-7890",
-    address: "123 Main St, City, Country",
-    image: "",
-    dob: "",
-    gender: "Not Selected",
+    // name: "John Doe",
+    // email: "johndoe@example.com",
+    // phone: "123-456-7890",
+    // address: "123 Main St, City, Country",
+    // image: "",
+    // dob: "",
+    // gender: "Not Selected",
   });
 
   const handleImageChange = (e) => {
@@ -21,6 +26,75 @@ export default function MyProfile() {
       setUserData((prev) => ({ ...prev, image: URL.createObjectURL(file) }));
     }
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/user/get-profile", {
+        headers: { token },
+      });
+
+      //  console.log(data);
+      if (data.success) {
+        setUserData(data.userData);
+      } else {
+        toast.error("Unable to fetch user profile");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const handleEditChange = async () => {
+    if (isEdit) {
+      try {
+        const formData = new FormData();
+        formData.append("name", userData.name);
+        formData.append("email", userData.email);
+        formData.append("phone", userData.phone);
+        formData.append("dob", userData.dob);
+        formData.append("gender", userData.gender);
+        formData.append("address", userData.address);
+  
+        // Append image only if a new one is selected
+        if (image) {
+          formData.append("image", image);
+        }
+  
+        const { data } = await axios.post(
+          `${backendUrl}/api/user/update-profile`,
+          formData,
+          {
+            headers:{token}
+          }
+        );
+  
+        console.log(data);
+  
+        if (data.success) {
+          toast.success("Profile updated successfully!");
+          setIsEdit(false);
+          fetchUserDetails(); // Refresh data after updating
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response?.data?.message || "Profile update failed");
+      }
+    } else {
+      setIsEdit(true);
+    }
+  };
+  
+  useEffect(() => {
+    fetchUserDetails();
+  }, [token]);
+
+  // useEffect(()=>{
+  //   handleEditChange();
+  //   setIsEdit(!isEdit)
+  // },[])
 
   return (
     <div className="p-6 mt-16 mb-10 m-auto max-w-lg mx-auto bg-white shadow-md rounded-md">
@@ -149,7 +223,7 @@ export default function MyProfile() {
               ? "bg-green-500 hover:bg-green-600"
               : "bg-blue-500 hover:bg-blue-600"
           }`}
-          onClick={() => setIsEdit(!isEdit)}
+          onClick={() => handleEditChange()}
         >
           {isEdit ? "Save" : "Edit Profile"}
         </button>
