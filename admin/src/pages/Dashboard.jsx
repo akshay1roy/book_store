@@ -24,12 +24,7 @@ export default function Dashboard() {
     count: booksByCategory[category]
   }));
 
-  // const booksByCategory = [
-  //   { name: 'Fiction', count: 120 },
-  //   { name: 'Non-Fiction', count: 80 },
-  //   { name: 'Science', count: 60 },
-  //   { name: 'Technology', count: 90 },
-  // ];
+  
 
   const salesData = [
     { name: 'Week 1', sales: 400 },

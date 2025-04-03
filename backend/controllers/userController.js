@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
 
         const user = await newUser.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET,{expiresIn:"2d"})
 
         // console.log(token)
 
@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
 
         if (isMatch) {
             // Generate JWT Token (expires in 7 days)
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "2d" });
             // console.log(token);
 
             // Remove password from the response

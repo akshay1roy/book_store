@@ -142,15 +142,15 @@ export default function Contact() {
         <div className="space-y-4">
           <p className="text-gray-600 flex items-center">
             <Phone className="text-blue-500 mr-2" size={18} />
-            <strong>Phone:</strong> +1 (123) 456-7890
+            <strong className="mr-2">Phone:</strong> +91 7667750662
           </p>
           <p className="text-gray-600 flex items-center">
             <Mail className="text-blue-500 mr-2" size={18} />
-            <strong>Email:</strong> contact@example.com
+            <strong className="mr-2">Email:</strong> akshaykumar880466@gmail.com
           </p>
           <p className="text-gray-600 flex items-center">
             <MapPin className="text-blue-500 mr-2" size={18} />
-            <strong>Location:</strong> 123 Main Street, City, Country
+            <strong className="mr-2">Location:</strong> S.S College road , Devghara jehanabad , Bihar India
           </p>
           <div className="w-full h-64 bg-gray-300 rounded-md overflow-hidden">
             <iframe

@@ -10,6 +10,8 @@ const UserAppContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [books, setBooks] = useState([]);
+  const [token,setToken]=useState(localStorage.getItem('token') || '');
+
 
   const getAllBooks = async () => {
     try {
@@ -29,11 +31,17 @@ const UserAppContextProvider = ({ children }) => {
     getAllBooks();
   },[])
 
+
+  useEffect(() => {
+    localStorage.setItem("token", token);
+  }, [token]);
+
   const value = {
     backendUrl,
     books,
     getAllBooks,
-    setBooks,
+    token,
+    setBooks,setToken
   };
 
   return (
