@@ -8,9 +8,6 @@ export default function Dashboard() {
   const {books,aToken,getAllBooks}=useContext(AdminContext)
   // Sample data for charts and cards
 
-
-  // this is 
-
   const categories = [...new Set(books.map((book) => book.category))];
 
   console.log(categories)
