@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function CardPage() {
   const { cart, addToCart, removeFromCart } = useContext(CartContext);
+
+  const navigate= useNavigate();
 
   // Calculate total price
   const totalPrice = cart.reduce(
@@ -78,7 +81,7 @@ export default function CardPage() {
           <h3 className="text-xl font-semibold">
             Total: ${totalPrice.toFixed(2)}
           </h3>
-          <button  className="mt-3 cursor-pointer px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
+          <button onClick={()=>navigate('/check-out')}  className="mt-3 cursor-pointer px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
             Proceed to Checkout
           </button>
         </div>

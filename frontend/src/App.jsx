@@ -14,6 +14,7 @@ import CardPage from "./pages/CardPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import Signup from "./pages/Signup";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/my-orders" element={<OrderPage />} />
         <Route path="/book/:bookId" element={<SingleBook />} />
+        <Route path="/check-out" element={<CheckoutPage/>} />
       </Routes>
       <Footer />
     </div>
