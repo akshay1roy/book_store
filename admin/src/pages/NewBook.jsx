@@ -79,6 +79,7 @@ export default function NewBook() {
     //   console.log(data);
       //   console.log("Book Submitted:", response.data);
       if (data.success) {
+        console.log(data);
         toast.success(data.message);
       } else {
         toast.error("Failed to Add Book");

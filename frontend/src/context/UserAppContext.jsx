@@ -10,6 +10,7 @@ const UserAppContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [books, setBooks] = useState([]);
+  const [userId,SetUserId]=useState(null)
   const [token,setToken]=useState(localStorage.getItem('token') || '');
 
 
@@ -17,7 +18,7 @@ const UserAppContextProvider = ({ children }) => {
     try {
       const {data} = await axios.get(`${backendUrl}/api/book/get-all-books`);
 
-    //   console.log(response);
+      // console.log(data);
       if (data.success) {
         setBooks(data.books);
       }
@@ -27,8 +28,31 @@ const UserAppContextProvider = ({ children }) => {
     }
   };
 
+
+  const fetchUserDetails = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/user/get-profile", {
+        headers: { token },
+      });
+
+      //  console.log(data.userData._id);
+      if (data.success) {
+        SetUserId(data.userData._id);
+      } else {
+        toast.error("Unable to fetch user profile");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+
+
+
   useEffect(()=>{
     getAllBooks();
+    fetchUserDetails()
   },[])
 
 
@@ -41,7 +65,8 @@ const UserAppContextProvider = ({ children }) => {
     books,
     getAllBooks,
     token,
-    setBooks,setToken
+    setBooks,setToken,
+    userId
   };
 
   return (

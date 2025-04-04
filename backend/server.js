@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import bookRouter from './routes/bookRoutes.js';
+import orderRouter from './routes/orderRoute.js';
 
 dotenv.config();  // Load environment variables at the top
 
@@ -27,6 +28,7 @@ app.use(cors());
 app.use('/api/user', userRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/book',bookRouter)
+app.use('/api/orders',orderRouter)
 
 // Start Server
 app.listen(PORT, () => {
