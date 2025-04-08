@@ -5,7 +5,7 @@ import { CartContext } from "../context/CartContext";
 import { UserAppContext } from "../context/UserAppContext";
 
 const Navbar = () => {
-  const {token, setToken}= useContext(UserAppContext)
+  const {token, setToken,userId}= useContext(UserAppContext)
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   // const [token, setToken] = useState(true);
@@ -123,7 +123,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link
-                      to="/my-orders"
+                    to={`/my-orders/${userId}`}
                       className=" text-gray-700 mt-1 block px-4 py-2 hover:bg-gray-100"
                     >
                       My Orders

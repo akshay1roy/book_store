@@ -88,3 +88,28 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
+
+
+export const getOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    console.log(userId);
+    const orders = await OrderModel.find({ userId }).sort({ createdAt: -1 });
+    
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.error("Error fetching orders", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+export const adminGetALLorder = async (req, res) => {
+  try {
+    const orders = await OrderModel.find({})
+    res.status(200).json({ orders });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching orders' });
+  }
+}

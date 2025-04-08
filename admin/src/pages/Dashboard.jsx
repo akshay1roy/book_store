@@ -1,29 +1,39 @@
-import React, { useContext, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { LineChart, Line } from 'recharts';
+import React, { useContext, useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { AdminContext } from '../context/AdminContext';
+import { AppContext } from '../context/AppContext';
+import axios from 'axios';
 
 export default function Dashboard() {
+  const { books, aToken, getAllBooks } = useContext(AdminContext);
+  const { backendUrl } = useContext(AppContext);
+  const [orders, setOrders] = useState([]);
+  const [revenue, setRevenue] = useState(0);
 
-  const {books,aToken,getAllBooks}=useContext(AdminContext)
-  // Sample data for charts and cards
-
-  const categories = [...new Set(books.map((book) => book.category))];
-
-  console.log(categories)
+  // const categories = [...new Set(books.map((book) => book.category))];
 
   const booksByCategory = books.reduce((acc, book) => {
     acc[book.category] = (acc[book.category] || 0) + 1;
     return acc;
   }, {});
-  
-  // Convert object into an array
-  const booksByCategoryArray = Object.keys(booksByCategory).map(category => ({
+
+  const booksByCategoryArray = Object.keys(booksByCategory).map((category) => ({
     name: category,
-    count: booksByCategory[category]
+    count: booksByCategory[category],
   }));
 
-  
+  const getAllOrders = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/api/orders/getallorders`, {
+        headers: { atoken: aToken },
+      });
+      setOrders(data.orders);
+      const totalRevenue = data.orders.reduce((acc, order) => acc + order.totalAmount, 0);
+      setRevenue(totalRevenue);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const salesData = [
     { name: 'Week 1', sales: 400 },
@@ -38,11 +48,12 @@ export default function Dashboard() {
     'New User Registered: John Doe',
   ];
 
-   useEffect(() => {
-      if (aToken) {
-        getAllBooks();
-      }
-    }, [aToken]);
+  useEffect(() => {
+    if (aToken) {
+      getAllBooks();
+      getAllOrders();
+    }
+  }, [aToken]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -53,19 +64,19 @@ export default function Dashboard() {
         {/* Total Books */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-medium">Total Books</h2>
-          <p className="text-3xl font-bold text-blue-500">{books?.length}</p>
+          <p className="text-3xl font-bold text-blue-500">{books?.length || 0}</p>
         </div>
 
         {/* Total Orders */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-medium">Total Orders</h2>
-          <p className="text-3xl font-bold text-pink-500">150</p>
+          <p className="text-3xl font-bold text-pink-500">{orders?.length || 0}</p>
         </div>
 
-        {/* Overall Stats */}
+        {/* Total Revenue */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-medium">Total Revenue</h2>
-          <p className="text-3xl font-bold text-green-500">$10,500</p>
+          <p className="text-3xl font-bold text-green-500">₹{revenue.toLocaleString()}</p>
         </div>
       </div>
 
@@ -75,7 +86,7 @@ export default function Dashboard() {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={booksByCategoryArray}>
             <XAxis dataKey="name" />
-            <YAxis tickFormatter={(value) => Number.isInteger(value) ? value : ''} allowDecimals={false} />
+            <YAxis tickFormatter={(value) => (Number.isInteger(value) ? value : '')} allowDecimals={false} />
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             <Legend />

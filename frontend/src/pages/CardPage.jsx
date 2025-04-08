@@ -5,42 +5,45 @@ import { useNavigate } from "react-router-dom";
 
 export default function CardPage() {
   const { cart, addToCart, removeFromCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
-  const navigate= useNavigate();
-
-  // Calculate total price
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.new_price * item.quantity,
     0
   );
 
   return (
-    <div className="max-w-screen mx-auto p-8 md:px-16 ">
-      <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
+    <div className="max-w-6xl mx-auto p-6 md:p-10">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
       {cart.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
+        <div className="text-center py-12 bg-gray-50 rounded-lg shadow-inner">
+          <p className="text-lg text-gray-500">Your cart is currently empty.</p>
+        </div>
       ) : (
-        <div className=" flex flex-col ">
+        <div className="space-y-6">
           {cart.map((item) => (
             <div
               key={item._id}
-              className="bg-white mt-2 p-4 rounded-lg  shadow-lg  flex flex-col md:flex-row md:justify-around items-center"
+              className="bg-white p-6 rounded-xl shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-6"
             >
-              <div className="flex md:flex-row flex-col gap-2  md:gap-6">
+              <div className="flex flex-col md:flex-row items-center gap-6">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-32 h-40 object-cover rounded-lg"
+                  className="w-28 h-36 object-cover rounded-lg shadow-sm"
                 />
-                <div className="flex flex-col">
-                  <h3 className="mt-3 text-lg font-semibold">{item.title}</h3>
-                  <p className="text-gray-500">{item.category}</p>
-                  <p className="mt-2 text-gray-600 text-lg font-semibold">
+                <div className="space-y-1 text-center md:text-left">
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-500">{item.category}</p>
+                  <p className="text-lg font-semibold text-blue-600">
                     ${item.new_price}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 mt-3">
+
+              <div className="flex items-center justify-center gap-4">
                 <button
                   onClick={() => {
                     if (item.quantity > 1) {
@@ -51,37 +54,42 @@ export default function CardPage() {
                       removeFromCart(item);
                     }
                   }}
-                  className="bg-red-500 cursor-pointer text-white px-6 py-1 rounded-md hover:bg-red-600"
+                  className="bg-red-500 cursor-pointer text-white px-4 py-1 rounded-lg hover:bg-red-600 transition"
                 >
                   -
                 </button>
-                <span className="text-lg font-semibold">{item.quantity}</span>
+                <span className="text-lg font-medium">{item.quantity}</span>
                 <button
                   onClick={() => {
                     addToCart(item);
                     toast.success("Item quantity increased");
                   }}
-                  className="bg-green-500 cursor-pointer text-white px-5 py-1 rounded-md hover:bg-green-600"
+                  className="bg-green-500 cursor-pointer text-white px-4 py-1 rounded-lg hover:bg-green-600 transition"
                 >
                   +
                 </button>
               </div>
-              <div>
-                <span className="text-lg md:text-xl font-semibold" >Prices:- </span>
-                <span className="text-green-600 font-semibold text-lg ">
-                ${(item.new_price * item.quantity).toFixed(2)}
-                </span>
+
+              <div className="text-center md:text-right">
+                <span className="text-gray-600 text-sm">Price</span>
+                <p className="text-lg font-semibold text-green-600 mt-1">
+                  ${(item.new_price * item.quantity).toFixed(2)}
+                </p>
               </div>
             </div>
           ))}
         </div>
       )}
+
       {cart.length > 0 && (
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-          <h3 className="text-xl font-semibold">
+        <div className="mt-10 bg-gray-50 p-6 rounded-xl shadow-inner flex flex-col md:flex-row items-center justify-between">
+          <h3 className="text-2xl font-bold text-gray-800">
             Total: ${totalPrice.toFixed(2)}
           </h3>
-          <button onClick={()=>navigate('/check-out')}  className="mt-3 cursor-pointer px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
+          <button
+            onClick={() => navigate("/check-out")}
+            className="mt-4 md:mt-0 cursor-pointer px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition"
+          >
             Proceed to Checkout
           </button>
         </div>
