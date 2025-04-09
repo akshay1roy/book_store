@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, ShoppingCart, User } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { UserAppContext } from "../context/UserAppContext";
 
 const Navbar = () => {
+
   const {token, setToken,userId}= useContext(UserAppContext)
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   // const [token, setToken] = useState(true);
   const dropdownRef = useRef(null);
+
+  const navigate=useNavigate();
 
   const { cart } = useContext(CartContext);
 
@@ -28,8 +31,9 @@ const Navbar = () => {
 
 
   const handleLogout=()=>{
-    localStorage.removeItem('token');
-    setToken(null);
+    localStorage.removeItem("token");
+    setToken("");
+    navigate('/')
   }
 
   return (
@@ -72,8 +76,7 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Authentication */}
-          {!token ? (
+          { !token ? (
             <div>
               <Link
                 to="/login"
@@ -224,7 +227,7 @@ const Navbar = () => {
                   My Profile
                 </Link>
                 <Link
-                  to="/my-orders"
+                  to={`/my-orders/${userId}`}
                   onClick={() => setMenuOpen(false)}
                   className="block font-bold text-white hover:text-gray-100"
                 >
@@ -232,7 +235,7 @@ const Navbar = () => {
                 </Link>
                 <button
                   className="w-full text-center cursor-pointer  bg-white rounded-xl font-bold text-red-600  hover:bg-gray-100 px-4 py-2"
-                  onClick={() => setToken(false)}
+                  onClick={handleLogout}
                 >
                   Logout
                 </button>

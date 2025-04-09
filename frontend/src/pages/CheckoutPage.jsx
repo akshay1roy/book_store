@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutPage() {
   const navigate = useNavigate();
 
-  const { cart } = useContext(CartContext);
+  const { cart,setCart } = useContext(CartContext);
 
   const { backendUrl, userId } = useContext(UserAppContext);
 
@@ -32,6 +32,13 @@ export default function CheckoutPage() {
   // handle order
 
   const handleOrder = async () => {
+    console.log(userId);
+
+    if (userId === null) {
+      navigate("/login");
+      return;
+    }
+
     if (
       !address.name ||
       !address.street ||
@@ -81,7 +88,7 @@ export default function CheckoutPage() {
       // 2. Launch Razorpay checkout
       const options = {
         // key: "rzp_test_TEad4LzKMi7vFf",    // Replace with your Razorpay key
-        key:import.meta.env.VITE_RAZORPAY_KEY_ID,  
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: data.amount,
         currency: data.currency,
         name: "Book Store",
@@ -104,6 +111,13 @@ export default function CheckoutPage() {
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
             toast.success("Payment successful!");
+            // Clear cart here after successful payment
+            setCart([]);
+            localStorage.removeItem("cart");
+
+            // Then navigate
+            navigate("/my-orders");
+            navigate(`/my-orders/${userId}`)
           } else {
             toast.error("Payment verification failed.");
           }

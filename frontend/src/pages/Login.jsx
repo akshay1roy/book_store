@@ -26,7 +26,7 @@ export default function Login() {
         formData
       );
       // console.log(/);
-      console.log(data);
+      // console.log(data);
 
       if (data.success) {
         toast.success("Login Successfully");

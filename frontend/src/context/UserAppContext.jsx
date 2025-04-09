@@ -11,7 +11,17 @@ const UserAppContextProvider = ({ children }) => {
 
   const [books, setBooks] = useState([]);
   const [userId,SetUserId]=useState(null)
-  const [token,setToken]=useState(localStorage.getItem('token') || '');
+
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem("token");
+    return storedToken && storedToken !== "undefined" && storedToken !== "false"
+      ? storedToken
+      : "";
+  });
+  
+  // const [token,setToken]=useState(localStorage.getItem('token')|| '');
+
+  // console.log("token",token);
 
 
   const getAllBooks = async () => {
@@ -38,7 +48,7 @@ const UserAppContextProvider = ({ children }) => {
       //  console.log(data.userData._id);
       if (data.success) {
         SetUserId(data.userData._id);
-      } else {
+      } else if(data.success==false && token) {
         toast.error("Unable to fetch user profile");
       }
     } catch (error) {
@@ -52,12 +62,13 @@ const UserAppContextProvider = ({ children }) => {
 
   useEffect(()=>{
     getAllBooks();
-    fetchUserDetails()
+    // fetchUserDetails()
   },[])
 
 
   useEffect(() => {
     localStorage.setItem("token", token);
+    fetchUserDetails()
   }, [token]);
 
   const value = {
