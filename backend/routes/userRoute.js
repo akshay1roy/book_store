@@ -14,3 +14,6 @@ userRouter.post('/update-profile',authUser, upload.single('image') ,updateProfil
 userRouter.get('/get-all-user', authAdmin, getAllUuser)
 
 export default userRouter
+
+
+// this is user Router 

@@ -88,7 +88,7 @@ const getProfile = async (req, res) => {
     try {
 
         const userId = req.user?.id;
-        console.log('userId get userprofile',userId)
+        // console.log('userId get userprofile',userId)
 
         const userData = await UserModel.findById(userId).select('-password');
 

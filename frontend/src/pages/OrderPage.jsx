@@ -6,23 +6,33 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 
 export default function OrderPage() {
-  const { backendUrl } = useContext(UserAppContext);
+  const { backendUrl, token } = useContext(UserAppContext);
   const { userId } = useParams();
 
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false); 
 
   const fetchOrders = async () => {
     try {
-      console.log(userId);
-      const res = await axios.get(`${backendUrl}/api/orders/user/${userId}`);
+      setLoading(true); 
+      console.log("userId", userId);
+      const res = await axios.get(`${backendUrl}/api/orders/user/${userId}`, {
+        headers: {
+          token,
+        },
+      });
+
+      // console.log(res);
       if (res.data.success) {
         setOrders(res.data.orders);
       } else {
-        toast.error("Failed to fetch orders");
+        toast.error(res.data.message || "Failed to fetch orders");
       }
     } catch (error) {
       toast.error("Error fetching orders");
       console.error(error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -36,7 +46,12 @@ export default function OrderPage() {
     <div className="max-w-6xl mx-auto p-6 md:p-10">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Your Orders</h2>
 
-      {orders.length === 0 ? (
+      {/* Loading Spinner */}
+      {loading ? (
+        <div className="text-center text-gray-700 py-12 animate-pulse">
+          Fetching your orders...
+        </div>
+      ) : orders.length === 0 ? (
         <div className="text-center text-gray-500 py-12 bg-gray-50 rounded-lg shadow-inner">
           You haven’t placed any orders yet.
         </div>
@@ -59,7 +74,9 @@ export default function OrderPage() {
                     Status:{" "}
                     <span
                       className={`font-medium ${
-                        order.paymentInfo.status === "paid" ? "text-green-600" : "text-yellow-600"
+                        order.paymentInfo.status === "paid"
+                          ? "text-green-600"
+                          : "text-yellow-600"
                       }`}
                     >
                       {order.paymentInfo.status}

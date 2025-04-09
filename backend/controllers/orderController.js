@@ -1,6 +1,9 @@
 import OrderModel from "../models/OrderModel.js";
 import razorpay from '../config/razorpay.js'
 import crypto from 'crypto';
+import UserModel from "../models/UserModel.js";
+import sendEmail from "../utils/sendEmail.js";
+// import sendEmail from '../utils/sendEmail.js';
 
 
 export const createOrder = async (req, res) => {
@@ -78,7 +81,41 @@ export const verifyPayment = async (req, res) => {
         { new: true }
       );
 
-      res.json({ success: true, message: "Payment verified", order });
+      // fetch user info
+      const user = await UserModel.findById(order.userId)
+
+      // ✅ Send email
+      const bookListHtml = order.books.map((b) => {
+        const title = b.bookId?.title || "Unknown";
+        const price = b.bookId?.price || 0;
+        const qty = b.quantity || 1;
+        return `<li>${title} - ₹${price} × ${qty} = ₹${price * qty}</li>`;
+      }).join("");
+
+      const html = `
+        <h2>🧾 Payment Receipt</h2>
+        <p>Hi ${user.name},</p>
+        <p>Thank you for your purchase! Your payment was successful.</p>
+        <hr />
+        <p><strong>Order ID:</strong> ${order._id}</p>
+        <p><strong>Payment ID:</strong> ${razorpayPaymentId}</p>
+        <p><strong>Total:</strong> ₹${order.totalAmount}</p>
+        <h3>📚 Books Purchased:</h3>
+        <ul>${bookListHtml}</ul>
+        <hr />
+        <p>We'll deliver your books soon 📦</p>
+        <p>Book Store Team</p>
+      `;
+
+      await sendEmail({
+        to: user.email,
+        subject: `🧾 Receipt for Order #${order._id}`,
+        html,
+      });
+
+
+
+      res.json({ success: true, message: "Payment verified and receipt sent!", order });
     } else {
       res.status(400).json({ success: false, message: "Invalid signature" });
     }
@@ -91,12 +128,14 @@ export const verifyPayment = async (req, res) => {
 
 
 export const getOrdersByUser = async (req, res) => {
+
+  console.log("this is get user order backend")
   try {
     const { userId } = req.params;
 
     console.log(userId);
     const orders = await OrderModel.find({ userId }).sort({ createdAt: -1 });
-    
+
     res.json({ success: true, orders });
   } catch (error) {
     console.error("Error fetching orders", error);

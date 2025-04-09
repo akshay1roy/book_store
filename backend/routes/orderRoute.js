@@ -1,6 +1,7 @@
 import express from 'express';
 import { createOrder, verifyPayment,getOrdersByUser,adminGetALLorder } from '../controllers/orderController.js';
 import authAdmin from '../middleware/authAdmin.js';
+import authUser from '../middleware/authUser.js';
 
 const orderRouter = express.Router();
 
@@ -13,7 +14,7 @@ orderRouter.post('/verify', verifyPayment);
 orderRouter.get('/getallorders', authAdmin ,adminGetALLorder);
 
 
-orderRouter.get('/user/:userId', getOrdersByUser);
+orderRouter.get('/user/:userId',authUser, getOrdersByUser);
 
 
 
