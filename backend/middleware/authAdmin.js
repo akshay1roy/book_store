@@ -14,12 +14,16 @@ const authAdmin = async (req, res,next) => {
         }
         const token_deocde = jwt.verify(atoken, process.env.JWT_SECRET)
 
-        if (token_deocde !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+        // console.log(token_deocde)
+
+        if (token_deocde.email !== process.env.ADMIN_EMAIL) {
             return res.json({ success: false, message: "Not Authorized Login Again " })
         }
 
 
-        req.user={id:token_deocde.id};
+        // req.user={id:token_deocde.id};
+        req.user = { email: token_deocde.email };
+        // console.log("req user",req.user)
 
         next();
 

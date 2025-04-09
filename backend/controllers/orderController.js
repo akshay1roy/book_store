@@ -107,7 +107,7 @@ export const getOrdersByUser = async (req, res) => {
 
 export const adminGetALLorder = async (req, res) => {
   try {
-    const orders = await OrderModel.find({})
+    const orders = await OrderModel.find({}).sort({ createdAt: -1 });
     res.status(200).json({ orders });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching orders' });

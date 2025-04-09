@@ -11,10 +11,17 @@ const loginAdmin = async (req, res) => {
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
 
-            const atoken = jwt.sign(email + password, process.env.JWT_SECRET)
+            // const atoken = jwt.sign(email + password, process.env.JWT_SECRET)
+
+            const atoken = jwt.sign(
+                { email  },  // Better to use an object for payload
+                process.env.JWT_SECRET,
+                { expiresIn: '6h' }  // <-- expires in 1 hour
+            );
 
 
-            console.log("admin token", atoken);
+
+            // console.log("admin token", atoken);
             res.json({ success: true, atoken });
         }
         else {

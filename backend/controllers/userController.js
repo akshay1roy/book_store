@@ -136,7 +136,9 @@ const updateProfile = async (req, res) => {
 const getAllUuser=async(req,res)=>{
     try {
 
-        const userData= await UserModel.find();
+        // const userData= await UserModel.find();
+
+        const userData = await UserModel.find().sort({ createdAt: -1 });
 
         res.json({ success: true, userData });
 
