@@ -6,7 +6,7 @@ export const AdminContext = createContext();
 
 const AdminContextProvider = ({ children }) => {
     const [aToken, setAToken] = useState(localStorage.getItem("aToken") || null);
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = "https://book-store-backend-5r0n.onrender.com";
 
   const [books,setBooks]=useState([])
   const [singleBook,setSingleBook]=useState(null)
