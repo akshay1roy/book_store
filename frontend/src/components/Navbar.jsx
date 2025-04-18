@@ -16,7 +16,7 @@ const Navbar = () => {
 
   const { cart,setCart } = useContext(CartContext);
 
-  const cartItemCount = token && cart.length || 0;
+  const cartItemCount = cart.length;
 
   // Close dropdown when clicking outside
   useEffect(() => {
