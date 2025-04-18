@@ -14,9 +14,9 @@ const Navbar = () => {
 
   const navigate=useNavigate();
 
-  const { cart } = useContext(CartContext);
+  const { cart,setCart } = useContext(CartContext);
 
-  const cartItemCount = cart.length;
+  const cartItemCount = token && cart.length || 0;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -33,6 +33,7 @@ const Navbar = () => {
   const handleLogout=()=>{
     localStorage.removeItem("token");
     setToken("");
+    setCart("")
     navigate('/')
   }
 

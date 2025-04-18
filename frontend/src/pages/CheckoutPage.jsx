@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutPage() {
   const navigate = useNavigate();
 
-  const { cart,setCart } = useContext(CartContext);
-
+  const { cart, setCart } = useContext(CartContext);
   const { backendUrl, userId } = useContext(UserAppContext);
 
   const totalPrice = cart.reduce(
@@ -29,11 +28,8 @@ export default function CheckoutPage() {
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
-  // handle order
-
+  // Handle order placement
   const handleOrder = async () => {
-    console.log(userId);
-
     if (userId === null) {
       navigate("/login");
       return;
@@ -78,8 +74,6 @@ export default function CheckoutPage() {
 
       const data = await res.json();
 
-      console.log(data);
-
       if (!data.success) {
         toast.error("Failed to create order");
         return;
@@ -87,7 +81,6 @@ export default function CheckoutPage() {
 
       // 2. Launch Razorpay checkout
       const options = {
-        // key: "rzp_test_TEad4LzKMi7vFf",    // Replace with your Razorpay key
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: data.amount,
         currency: data.currency,
@@ -111,20 +104,15 @@ export default function CheckoutPage() {
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
             toast.success("Payment successful!");
-            // Clear cart here after successful payment
-            setCart([]);
-            localStorage.removeItem("cart");
-
-            // Then navigate
-            navigate("/my-orders");
-            navigate(`/my-orders/${userId}`)
+            setCart([]); // Clear cart on successful payment
+            localStorage.removeItem("cart"); // Remove cart from localStorage
+            navigate(`/my-orders/${userId}`);
           } else {
             toast.error("Payment verification failed.");
           }
         },
         prefill: {
           name: address.name,
-          email: "customer@example.com", // Optional
           contact: address.phone,
         },
         theme: {
@@ -135,14 +123,11 @@ export default function CheckoutPage() {
       const rzp = new window.Razorpay(options);
       rzp.open();
 
-      navigate("/");
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong during checkout.");
     }
   };
-
-  //  end of handle order
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">

@@ -15,7 +15,7 @@ export default function OrderPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true); 
-      console.log("userId", userId);
+      // console.log("userId", userId);
       const res = await axios.get(`${backendUrl}/api/orders/user/${userId}`, {
         headers: {
           token,

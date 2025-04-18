@@ -2,62 +2,54 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export const AppContext=createContext();
+export const AppContext = createContext();
 
-const AppContextProvider=({children})=>{
+const AppContextProvider = ({ children }) => {
+  const [aToken, setAToken] = useState(localStorage.getItem("aToken") || null);
 
-    const [aToken, setAToken] = useState(localStorage.getItem("aToken") || null);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const backendUrl=import.meta.env.VITE_BACKEND_URL
+  const [users, setUsers] = useState([]);
 
-    const [users,setUsers]=useState([])
+  const getAllUser = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/user/get-all-user", {
+        headers: { aToken },
+      });
 
+      // console.log(aToken);
+      // console.log(response)
 
-    const getAllUser=async()=>{
-        try {
-            
-            const {data}= await axios.get(backendUrl+'/api/user/get-all-user',{headers:{aToken}})
-
-            // console.log(aToken);
-            // console.log(response)
-
-            if(data.success)
-            {
-                // toast.success('success');
-                setUsers(data.userData);
-            }
-            else{
-                toast.error("Doesn't fetch user");
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
+      if (data.success) {
+        // toast.success('success');
+        setUsers(data.userData);
+      } else {
+        toast.error("Doesn't fetch user");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
     }
+  };
 
-    
+  const value = {
+    users,
+    setUsers,
+    backendUrl,
+    getAllUser,
+    setAToken,
+  };
 
-    const value={
-        users,
-        setUsers,
-        backendUrl,
-        getAllUser,
-        setAToken
+  useEffect(() => {
+    if (aToken) {
+      localStorage.setItem("aToken", aToken);
+      getAllUser();
+    } else {
+      localStorage.removeItem("aToken"); // Remove token on logout
     }
+  }, [aToken]);
 
-     useEffect(() => {
-        if (aToken) {
-          localStorage.setItem("aToken", aToken);
-        } else {
-          localStorage.removeItem("aToken"); // Remove token on logout
-        }
-      }, [aToken]);
-
-    return (
-        <AppContext.Provider value={value}>
-            {children}
-        </AppContext.Provider>
-    )
-}
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
 
 export default AppContextProvider;
